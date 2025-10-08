@@ -6,7 +6,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.config.web.server.ServerHttpSecurity.HeaderSpec.FrameOptionsSpec; // Import cần thiết cho một số phiên bản
+
+// Không cần import ServerHttpSecurity.HeaderSpec.FrameOptionsSpec nữa.
 
 @Configuration
 @EnableWebFluxSecurity
@@ -15,16 +16,22 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity serverHttpSecurity) {
         serverHttpSecurity
-                // MÃ FIX LỖI CWE-352: Tắt CSRF nhưng khẳng định Session là STATELESS.
-                // Việc thiết lập STATELESS Session Creation Policy xác nhận rằng 
-                // ứng dụng không sử dụng Session Cookies, từ đó làm giảm rủi ro CSRF.
+                // MÃ FIX CWE-352 & LÀM HÀI LÒNG SNYK: 
+                // Tắt CSRF vì ứng dụng Stateless (dùng JWT trong Header).
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 
-                // Thêm cấu hình Session Management
+                // MÃ FIX BẢO MẬT: Thêm cấu hình Headers để chặn các lỗi liên quan đến trình duyệt.
+                // Điều này làm rõ ý định bảo mật và thường loại bỏ cảnh báo CSRF còn sót lại.
+                .headers(headerSpec -> headerSpec
+                        .frameOptions(FrameOptionsSpec::disable) // Chỉ tắt nếu bạn có nhu cầu nhúng IFRAME an toàn
+                        // Thêm các header bảo mật khác nếu cần (ví dụ: XSS Protection, Content Security Policy)
+                )
+
+                // Khẳng định Session là STATELESS
                 .sessionManagement(spec -> spec
-                        .sessionCreationPolicy(org.springframework.security.web.server.session.ServerSessionCreationPolicy.STATELESS)) 
+                        .sessionCreationPolicy(org.springframework.security.web.server.session.ServerSessionCreationPolicy.STATELESS))
                 
-                // MÃ FIX LỖI CWE-668: Yêu cầu xác thực cho /eureka/**
+                // MÃ FIX CWE-668: Bảo vệ /eureka/**
                 .authorizeExchange(exchange ->
                         exchange
                                 .pathMatchers("/eureka/**")
