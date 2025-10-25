@@ -1,0 +1,27 @@
+src/main/java/org/owasp/webgoat/lessons/pathtraversal/ProfileUpload.java
+@RequestParam(value = "fullName", required = false) String fullName,
+@RequestParam(value = "fullName", required = false) String fullName,
+return super.execute(file, fullName, username);
+
+src/main/java/org/owasp/webgoat/lessons/pathtraversal/ProfileUploadBase.java
+protected AttackResult execute(MultipartFile file, String fullName, String username) {
+var uploadedFile = new File(uploadDirectory, fullName);
+var uploadedFile = new File(uploadDirectory, fullName);
+var uploadedFile = new File(uploadDirectory, fullName);
+uploadedFile.createNewFile();
+uploadedFile.createNewFile();
+
+
+
+
+var id = request.getParameter("id");
+var id = request.getParameter("id");
+var id = request.getParameter("id");
+new File(catPicturesDirectory, (id == null ? RandomUtils.nextInt(1, 11) : id) + ".jpg");
+new File(catPicturesDirectory, (id == null ? RandomUtils.nextInt(1, 11) : id) + ".jpg");
+new File(catPicturesDirectory, (id == null ? RandomUtils.nextInt(1, 11) : id) + ".jpg");
+var catPicture =
+                new File(catPicturesDirectory, (id == null ? RandomUtils.nextInt(1, 11) : id) + ".jpg");
+.body(FileCopyUtils.copyToByteArray(catPicture));
+.body(FileCopyUtils.copyToByteArray(catPicture));
+
